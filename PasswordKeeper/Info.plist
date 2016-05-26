@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.418612577680-sncb469qrij20nrm9t4opolr5p2em07m</string>
+				<string>com.googleusercontent.apps.47664008644-9423hirfil4up023enp1li3lc68vae24</string>
 			</array>
 		</dict>
 		<dict>
@@ -33,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>edu.rosehulman.csse.passwordkeeper</string>
+				<string>edu.rosehulman.csse.PasswordKeeper</string>
 			</array>
 		</dict>
 	</array>

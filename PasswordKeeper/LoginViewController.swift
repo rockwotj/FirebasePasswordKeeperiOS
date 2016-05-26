@@ -36,7 +36,9 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
           let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
           alertController.addAction(okAction)
           self.presentViewController(alertController, animated: true, completion: nil)
+
           print(err?.localizedDescription)
+          print(err?.description)
         }
       }
     }
@@ -70,6 +72,10 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
     }
     let authentication = user.authentication
     let credential = FIRGoogleAuthProvider.credentialWithIDToken(authentication.idToken, accessToken: authentication.accessToken)
+
+
+    print("Credential = \(credential.provider)")
+
     FIRAuth.auth()?.signInWithCredential(credential, completion: loginClosure)
   }
 
