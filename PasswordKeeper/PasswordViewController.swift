@@ -10,7 +10,6 @@ import UIKit
 import FoldingCell
 import Material
 import Firebase
-import NBMaterialDialogIOS
 
 class PasswordViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -37,7 +36,7 @@ class PasswordViewController: UIViewController, UITableViewDataSource, UITableVi
 
     let firebaseRef = FIRDatabase.database().reference()
 
-    passwordRef = firebaseRef.child("users/\(FIRAuth.auth()?.currentUser!.uid)")
+    passwordRef = firebaseRef.child("users/\(FIRAuth.auth()!.currentUser!.uid)")
 
     passwordRef.observeEventType(.ChildAdded) { snapshot in self.passwordAdded(snapshot) }
     passwordRef.observeEventType(.ChildChanged) { snapshot in self.passwordChanged(snapshot) }
@@ -97,59 +96,79 @@ class PasswordViewController: UIViewController, UITableViewDataSource, UITableVi
   // MARK: - Button Click Handlers
 
   func onEdit(pw : Password) {
-    let dialog = NBMaterialAlertDialog()
-    let dialogView = PasswordDialog.instanceFromNib(self)
-    dialogView.setPassword(pw)
-    dialog.showDialog(view,
-                      title: "Edit Password",
-                      content: dialogView,
-                      dialogHeight: PasswordDialog.height,
-                      okButtonTitle: "Okay",
-                      action: { (cancelled) -> Void in
-                        if !cancelled {
-                          let pwRef = self.passwordRef.child(pw.key)
-                          let password = dialogView.getPassword()
-                          pwRef.setValue([
-                            "service": password.service,
-                            "password": password.password,
-                            "username": password.username
-                            ])
-                        }
-      }, cancelButtonTitle: "Cancel")
+    let alertController = UIAlertController(title: "Edit password", message: "", preferredStyle: .Alert)
+    alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+      textField.text = pw.service
+      textField.placeholder = "Service"
+    }
+    alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+      textField.text = pw.username
+      textField.placeholder = "Username"
+    }
+    alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+      textField.text = pw.password
+      textField.placeholder = "Password"
+      textField.secureTextEntry = true
+    }
+    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+    let defaultAction = UIAlertAction(title: "Edit", style: UIAlertActionStyle.Default) { (action) -> Void in
+      let serviceTextField = alertController.textFields![0] as UITextField
+      let usernameTextField = alertController.textFields![1] as UITextField
+      let passwordTextField = alertController.textFields![2] as UITextField
+
+      let pwRef = self.passwordRef.child(pw.key)
+      pwRef.setValue([
+        "service": serviceTextField.text as String!,
+        "username": usernameTextField.text as String!,
+        "password": passwordTextField.text as String!,
+        ])
+    }
+    alertController.addAction(cancelAction)
+    alertController.addAction(defaultAction)
+    presentViewController(alertController, animated: true, completion: nil)
   }
 
   func onDelete(pw : Password) {
-    NBMaterialAlertDialog.showAlertWithTextAndTitle(view,
-                                                    text: "Are you sure?",
-                                                    title: "Delete Password",
-                                                    dialogHeight: 175,
-                                                    okButtonTitle: "Yes",
-                                                    action: { (cancelled) -> Void in
-                                                      if !cancelled {
-                                                        self.passwordRef.child(pw.key).removeValue()
-                                                      }
-      }, cancelButtonTitle: "No")
+    let alertController = UIAlertController(title: "Delete password", message: "Are you sure?", preferredStyle: .Alert)
+    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+    let deleteAction = UIAlertAction(title: "Delete", style: UIAlertActionStyle.Destructive) { (action) -> Void in
+      let pwRef = self.passwordRef.child(pw.key)
+      pwRef.removeValue()
+    }
+    alertController.addAction(cancelAction)
+    alertController.addAction(deleteAction)
+    presentViewController(alertController, animated: true, completion: nil)
+
   }
 
   @IBAction func addPassword(sender: AnyObject) {
-    let dialog = NBMaterialAlertDialog()
-    let dialogView = PasswordDialog.instanceFromNib(self)
-    dialog.showDialog(view,
-                      title: "Add Password",
-                      content: dialogView,
-                      dialogHeight: PasswordDialog.height,
-                      okButtonTitle: "Okay",
-                      action: { (cancelled) -> Void in
-                        if !cancelled {
-                          let pwRef = self.passwordRef.childByAutoId()
-                          let pw = dialogView.getPassword()
-                          pwRef.setValue([
-                            "service": pw.service,
-                            "password": pw.password,
-                            "username": pw.username
-                            ])
-                        }
-      }, cancelButtonTitle: "Cancel")
+    let alertController = UIAlertController(title: "Add password", message: "", preferredStyle: .Alert)
+    alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+      textField.placeholder = "Service"
+    }
+    alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+      textField.placeholder = "Username"
+    }
+    alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+      textField.placeholder = "Password"
+      textField.secureTextEntry = true
+    }
+    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+    let defaultAction = UIAlertAction(title: "Add", style: UIAlertActionStyle.Default) { (action) -> Void in
+      let serviceTextField = alertController.textFields![0] as UITextField
+      let usernameTextField = alertController.textFields![1] as UITextField
+      let passwordTextField = alertController.textFields![2] as UITextField
+
+      let pwRef = self.passwordRef.childByAutoId()
+      pwRef.setValue([
+        "service": serviceTextField.text as String!,
+        "password": usernameTextField.text as String!,
+        "username": passwordTextField.text as String!
+        ])
+    }
+    alertController.addAction(cancelAction)
+    alertController.addAction(defaultAction)
+    presentViewController(alertController, animated: true, completion: nil)
   }
 
   // MARK: - Table View Methods

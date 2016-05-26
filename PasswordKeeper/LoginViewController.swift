@@ -9,7 +9,6 @@
 import UIKit
 import Material
 import Firebase
-import NBMaterialDialogIOS
 import Rosefire
 
 class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
@@ -27,18 +26,16 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
 
   var loginClosure: FIRAuthResultCallback {
     get {
-//      let loadingDialog = NBMaterialLoadingDialog.showLoadingDialogWithText(view, message: "Logging In...")
+      //      let loadingDialog = NBMaterialLoadingDialog.showLoadingDialogWithText(view, message: "Logging In...")
       return { (user, err) in
-//        loadingDialog.hideDialog()
+        //        loadingDialog.hideDialog()
         if err == nil {
           self.appDelegate.handleLogin()
         } else {
-//          NBMaterialAlertDialog.showAlertWithText(self.view,
-//                                                  text: "Login failed",
-//                                                  okButtonTitle: "OK",
-//                                                  action: nil,
-//                                                  cancelButtonTitle: nil)
-
+          let alertController = UIAlertController(title: "Login failed", message: "", preferredStyle: .Alert)
+          let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
+          alertController.addAction(okAction)
+          self.presentViewController(alertController, animated: true, completion: nil)
           print(err?.localizedDescription)
         }
       }
@@ -115,7 +112,7 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
 
     textField.font = RobotoFont.mediumWithSize(12)
     textField.textColor = MaterialColor.white
-//    textField.textActiveColor = MaterialColor.white
+    //    textField.textActiveColor = MaterialColor.white
 
     /*
      Used to display the error message, which is displayed when
@@ -123,7 +120,7 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
      */
     textField.detailLabel.text = "Email is incorrect."
     textField.detailLabel.font = RobotoFont.mediumWithSize(12)
-//    textField.detailLabel.activeColor = MaterialColor.red.accent3
+    //    textField.detailLabel.activeColor = MaterialColor.red.accent3
     // textField.detailLabelAutoHideEnabled = false // Uncomment this line to have manual hiding.
 
     let image = UIImage(named: "ic_close_white")?.imageWithRenderingMode(.AlwaysTemplate)
@@ -145,7 +142,7 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
 
     textField.font = RobotoFont.mediumWithSize(12)
     textField.textColor = MaterialColor.white
-//    textField.titleLabelActiveColor = MaterialColor.white
+    //    textField.titleLabelActiveColor = MaterialColor.white
 
     textField.clearIconButton?.pulseColor = MaterialColor.grey.lighten4
     //            clearButton.pulseScale = false
@@ -163,5 +160,5 @@ class LoginViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDeleg
     rosefireLoginButton.titleLabel!.font = RobotoFont.mediumWithSize(18)
     rosefireLoginButton.backgroundColor = MaterialColor.indigo.darken2
   }
-
+  
 }
