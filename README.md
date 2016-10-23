@@ -1,7 +1,13 @@
 
 # Password Keeper iOS
 
-This is an example of authentication with Firebase on iOS.
+# OUTDATED
+
+Checkout http://www.rosebotics.org/courses if you're interested, all this content has been merged into courses at Rose-Hulman
+
+## Intro
+
+This is an example of authentication with Firebase on iOS. 
 
 This also is a showcase of [Material Design on iOS](https://github.com/CosmicMind/Material).
 
